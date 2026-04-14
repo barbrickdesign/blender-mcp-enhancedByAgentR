@@ -13,6 +13,28 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 # ── Helpers ──────────────────────────────────────────────────
+
+# ConvertFrom-Json -AsHashtable was added in PowerShell 6.0.
+# This wrapper provides the same behaviour on PowerShell 5.1+.
+function ConvertTo-Hashtable($obj) {
+    if ($obj -is [System.Collections.Hashtable]) { return $obj }
+    $ht = [ordered]@{}
+    if ($obj -is [System.Management.Automation.PSCustomObject]) {
+        foreach ($prop in $obj.PSObject.Properties) {
+            $ht[$prop.Name] = ConvertTo-Hashtable $prop.Value
+        }
+    } elseif ($obj -is [System.Collections.IEnumerable] -and $obj -isnot [string]) {
+        return @($obj | ForEach-Object { ConvertTo-Hashtable $_ })
+    } else {
+        return $obj
+    }
+    return $ht
+}
+
+function ConvertFrom-JsonToHashtable($json) {
+    ConvertTo-Hashtable (ConvertFrom-Json $json)
+}
+
 function Write-Header($msg) {
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Cyan
@@ -97,7 +119,7 @@ function Merge-McpConfig($configPath, $serverJson) {
 
     $config = @{}
     if (Test-Path $configPath) {
-        try { $config = Get-Content $configPath -Raw | ConvertFrom-Json -AsHashtable }
+        try { $config = ConvertFrom-JsonToHashtable (Get-Content $configPath -Raw) }
         catch { Write-Warn "Could not parse existing config at $configPath — will overwrite." }
     }
 
@@ -129,7 +151,7 @@ $vscodeMcpPath = Join-Path $RepoDir ".vscode\mcp.json"
 Write-Step "Checking .vscode/mcp.json..."
 $vscodeMcp = @{}
 if (Test-Path $vscodeMcpPath) {
-    try { $vscodeMcp = Get-Content $vscodeMcpPath -Raw | ConvertFrom-Json -AsHashtable }
+    try { $vscodeMcp = ConvertFrom-JsonToHashtable (Get-Content $vscodeMcpPath -Raw) }
     catch { }
 }
 if (-not $vscodeMcp.ContainsKey("servers")) { $vscodeMcp["servers"] = @{} }

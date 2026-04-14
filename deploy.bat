@@ -25,7 +25,7 @@ if not "%~1"=="" (
 
 echo.
 echo ========================================
-echo   BlenderMCP -- One-Click Deployment
+echo   BlenderMCP — One-Click Deployment
 echo ========================================
 echo.
 
