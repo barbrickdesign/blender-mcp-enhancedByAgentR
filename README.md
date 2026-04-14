@@ -216,7 +216,42 @@ GitHub Copilot in VS Code supports MCP servers in **Agent mode** (requires VS Co
 }
 ```
 
-### Installing the Blender Addon
+### Quick Launcher (Recommended)
+
+Instead of installing the addon manually you can use the included launcher.
+It detects your Blender 5.0 installation, installs the addon automatically,
+and starts Blender with the MCP socket server already running.
+
+**Prerequisites:** Python 3.10+ on your system `PATH`.
+
+```bash
+# From the repository root:
+python launch_blender.py
+```
+
+If Blender is not in a standard location, pass the path explicitly:
+
+```bash
+# Windows example
+python launch_blender.py --blender-path "C:\Program Files\Blender Foundation\Blender 5.0\blender.exe"
+
+# macOS example
+python launch_blender.py --blender-path /Applications/Blender.app/Contents/MacOS/Blender
+
+# Linux example
+python launch_blender.py --blender-path ~/blender-5.0-linux-x64/blender
+```
+
+Once Blender opens, the MCP socket server is listening on `localhost:9876` — no
+extra steps required. You can verify this in Blender's system console or in the
+**BlenderMCP** panel (press **N** in the 3D Viewport).
+
+Any additional arguments after `--blender-path` are forwarded directly to
+Blender (e.g. `--background`, `--scene my_scene.blend`).
+
+---
+
+### Installing the Blender Addon (Manual)
 
 1. Download the `addon.py` file from this repo
 1. Open Blender
