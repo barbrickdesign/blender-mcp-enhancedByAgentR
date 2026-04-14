@@ -2,7 +2,7 @@
 
 # BlenderMCP - Blender Model Context Protocol Integration
 
-BlenderMCP connects Blender to Claude AI through the Model Context Protocol (MCP), allowing Claude to directly interact with and control Blender. This integration enables prompt assisted 3D modeling, scene creation, and manipulation.
+BlenderMCP connects Blender to AI assistants through the Model Context Protocol (MCP), allowing AI tools to directly interact with and control Blender. This integration enables prompt-assisted 3D modeling, scene creation, and manipulation. Supported AI clients include **GitHub Copilot**, Claude Desktop, Cursor, and any other MCP-compatible AI tool.
 
 **We have no official website. Any website you see online is unofficial and has no affiliation with this project. Use them at your own risk.**
 
@@ -37,11 +37,11 @@ Give feedback, get inspired, and build on top of the MCP: [Discord](https://disc
 
 ## Features
 
-- **Two-way communication**: Connect Claude AI to Blender through a socket-based server
+- **Two-way communication**: Connect any MCP-compatible AI to Blender through a socket-based server
 - **Object manipulation**: Create, modify, and delete 3D objects in Blender
 - **Material control**: Apply and modify materials and colors
 - **Scene inspection**: Get detailed information about the current Blender scene
-- **Code execution**: Run arbitrary Python code in Blender from Claude
+- **Code execution**: Run arbitrary Python code in Blender from your AI assistant
 
 ## Components
 
@@ -169,6 +169,53 @@ _Prerequisites_: Make sure you have [Visual Studio Code](https://code.visualstud
 
 [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_blender--mcp_server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=ffffff)](vscode:mcp/install?%7B%22name%22%3A%22blender-mcp%22%2C%22type%22%3A%22stdio%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22blender-mcp%22%5D%7D)
 
+### GitHub Copilot Integration (VS Code)
+
+GitHub Copilot in VS Code supports MCP servers in **Agent mode** (requires VS Code 1.99+ and GitHub Copilot Chat extension).
+
+**Quick setup (recommended):** This repository already includes a `.vscode/mcp.json` file. Simply open the repo folder in VS Code and GitHub Copilot will automatically discover the `blender-mcp` server.
+
+**Manual setup:** If you prefer to configure it yourself, add the following to `.vscode/mcp.json` in your workspace root:
+
+```json
+{
+    "servers": {
+        "blender-mcp": {
+            "type": "stdio",
+            "command": "uvx",
+            "args": [
+                "blender-mcp"
+            ]
+        }
+    }
+}
+```
+
+**To use BlenderMCP with GitHub Copilot:**
+1. Make sure the Blender addon server is running (see [Installing the Blender Addon](#installing-the-blender-addon))
+2. Open VS Code and open the Copilot Chat panel
+3. Switch to **Agent mode** (click the mode selector in the chat input and choose `Agent`)
+4. The `blender-mcp` server tools will be available automatically — Copilot will call them as needed
+5. You can also click the 🔧 tools icon in the chat input to see and enable/disable individual tools
+
+**Windows users:** If `uvx` is not found, use this alternative configuration:
+
+```json
+{
+    "servers": {
+        "blender-mcp": {
+            "type": "stdio",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "uvx",
+                "blender-mcp"
+            ]
+        }
+    }
+}
+```
+
 ### Installing the Blender Addon
 
 1. Download the `addon.py` file from this repo
@@ -186,12 +233,12 @@ _Prerequisites_: Make sure you have [Visual Studio Code](https://code.visualstud
 1. In Blender, go to the 3D View sidebar (press N if not visible)
 2. Find the "BlenderMCP" tab
 3. Turn on the Poly Haven checkbox if you want assets from their API (optional)
-4. Click "Connect to Claude"
-5. Make sure the MCP server is running in your terminal
+4. Click "Connect to MCP AI"
+5. Make sure the MCP server is running in your AI tool (Claude Desktop, GitHub Copilot, Cursor, etc.)
 
-### Using with Claude
+### Using with Your AI Assistant
 
-Once the config file has been set on Claude, and the addon is running on Blender, you will see a hammer icon with tools for the Blender MCP.
+Once the config has been set in your AI tool (Claude Desktop, GitHub Copilot, Cursor, etc.), and the addon is running in Blender, you will see a hammer icon with tools for the Blender MCP.
 
 ![BlenderMCP in the sidebar](assets/hammer-icon.png)
 
@@ -207,7 +254,7 @@ Once the config file has been set on Claude, and the addon is running on Blender
 
 ### Example Commands
 
-Here are some examples of what you can ask Claude to do:
+Here are some examples of what you can ask your AI to do:
 
 - "Create a low poly scene in a dungeon, with a dragon guarding a pot of gold" [Demo](https://www.youtube.com/watch?v=DqgKuLYUv00)
 - "Create a beach vibe using HDRIs, textures, and models like rocks and vegetation from Poly Haven" [Demo](https://www.youtube.com/watch?v=I29rn92gkC4)
@@ -225,10 +272,11 @@ Hyper3D's free trial key allows you to generate a limited number of models per d
 
 ## Troubleshooting
 
-- **Connection issues**: Make sure the Blender addon server is running, and the MCP server is configured on Claude, DO NOT run the uvx command in the terminal. Sometimes, the first command won't go through but after that it starts working.
+- **Connection issues**: Make sure the Blender addon server is running, and the MCP server is configured in your AI tool. DO NOT run the uvx command manually in the terminal. Sometimes, the first command won't go through but after that it starts working.
+- **GitHub Copilot**: Make sure you are in **Agent mode** in Copilot Chat (not Ask or Edit mode). Agent mode is required for MCP tool use.
 - **Timeout errors**: Try simplifying your requests or breaking them into smaller steps
-- **Poly Haven integration**: Claude is sometimes erratic with its behaviour
-- **Have you tried turning it off and on again?**: If you're still having connection errors, try restarting both Claude and the Blender server
+- **Poly Haven integration**: AI tools are sometimes erratic with their behaviour
+- **Have you tried turning it off and on again?**: If you're still having connection errors, try restarting both your AI tool and the Blender server
 
 
 ## Technical Details
